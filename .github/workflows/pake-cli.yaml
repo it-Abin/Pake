@@ -260,10 +260,8 @@ jobs:
         with:
            name: ${{ inputs.name }}-Windows
            path: |
-             ${{ inputs.name }}.msi
-             ${{ inputs.name }}.exe
-             *.exe
-             *.msi
+             **/*.exe
+             **/*.msi
            retention-days: 3
 
       - name: Rust cache store
