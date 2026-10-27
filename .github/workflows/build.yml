@@ -1,4 +1,5 @@
 name: Build Pake App
+
 on:
   workflow_dispatch:
 
@@ -12,18 +13,27 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: x86_64-pc-windows-msvc
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
       - name: Build App
         run: |
-          npx pake-cli http://localhost:5200 --name "Readers" --transparent --hide-title-bar --width 420 --height 800 --min-width 200 --min-height 60 --targets msi
-          
+          npx pake-cli@2.0.6 http://localhost:5200 --name "Readers" --transparent --hide-title-bar --width 420 --height 800 --min-width 200 --min-height 60 --targets msi
+        env:
+          CI: true
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Readers-Windows
           path: src-tauri/target/release/bundle/msi/*.msi
+          if-no-files-found: error
